@@ -1,23 +1,38 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import StudentList from "../views/student-management/StudentList.vue";
+import StudentAdd from "@/views/student-management/StudentAdd.vue";
+import StudentEddit from "@/views/student-management/StudentEddit.vue";
+import StudentShow from "@/views/student-management/StudentShow.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
+      path: "/",
+      name: "student-list",
+      component: StudentList,
+    },
+    // {
+    //   path: "/student",
+    //   name: "student-list",
+    //   component: StudentList,
+    // },
+    {
+      path: "/student-add",
+      name: "student-add",
+      component: StudentAdd,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }
-  ]
-})
+      path: "/student-eddit/:id",
+      name: "student-eddit",
+      component: StudentEddit,
+    },
+    {
+      path: "/student-show/:id",
+      name: "student-show",
+      component: StudentShow,
+    },
+  ],
+});
 
-export default router
+export default router;
