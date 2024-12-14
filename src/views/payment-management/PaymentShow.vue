@@ -1,4 +1,5 @@
 <template>
+
   <div class="container mt-4">
     <div
       class="header d-flex justify-content-center align-items-center mb-3 p-3"
@@ -229,3 +230,4 @@ onMounted(async () => {
   color: white;
 }
 </style>
+

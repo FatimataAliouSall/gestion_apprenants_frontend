@@ -1,5 +1,6 @@
 <template>
   <div class="container mt-4">
+
     <div
       class="header d-flex justify-content-center align-items-center mb-3 p-3"
     >
@@ -70,21 +71,11 @@
             </option>
           </select>
         </div>
-      </div>
-      <div class="form-group mb-3">
-        <label for="amount">Montant</label>
-        <input
-          type="number"
-          id="amount"
-          v-model="form.amount"
-          class="form-control"
-          placeholder="Montant (en MRU)"
-          required
-        />
-      </div>
-      <div class="form-group mb-3">
-        <label for="method">Méthode</label>
+
+
         <select id="method" v-model="form.paymentMode" class="form-select" required>
+
+
           <option value="" disabled>Choisissez une méthode</option>
           <option value="Carte Bancaire">Carte Bancaire</option>
           <option value="Espèces">Espèces</option>
@@ -92,9 +83,11 @@
         </select>
       </div>
       <div class="d-flex justify-content-between">
+
         <router-link class="btn btn-cancel" :to="{ name: 'payment-list' }"
           >Annuler</router-link
         >
+
         <button type="submit" class="btn btn-add">Ajouter</button>
       </div>
     </form>
@@ -102,6 +95,7 @@
 </template>
 
 <script setup>
+
 import { onMounted, reactive, ref, watch } from "vue";
 import { storePayment } from "@/stores/storePayment";
 import { useRouter } from "vue-router";
@@ -139,6 +133,9 @@ onMounted(async () => {
   } catch (error) {
     console.log("Erreur lors de chargement de données: ", error);
   }
+
+
+
 });
 
 const handleSubmit = async () => {

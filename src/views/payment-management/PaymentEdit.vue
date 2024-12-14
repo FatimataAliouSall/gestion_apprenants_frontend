@@ -1,4 +1,5 @@
 <template>
+
   <div class="container mt-4">
     <div
       class="header d-flex justify-content-center align-items-center mb-3 p-3"
@@ -102,11 +103,11 @@
         >
         <button type="submit" class="btn btn-add">Enregistrer</button>
       </div>
-    </form>
-  </div>
+    </form></div>
 </template>
 
 <script setup>
+
 import { onMounted, ref, watch } from "vue";
 import { storePayment } from "@/stores/storePayment";
 import { useRoute } from "vue-router";
