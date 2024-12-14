@@ -1,29 +1,61 @@
-# vue-project
+# Plateforme de Suivi des Formations - Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+Ce projet fait partie d'une plateforme de suivi des formations destinée à l'administration d'une structure de formation. L'application permet de gérer les apprenants, les modules de formation, les inscriptions, et les paiements.
 
-## Recommended IDE Setup
+## Prérequis
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Avant d'installer et d'exécuter ce projet, assurez-vous d'avoir les éléments suivants :
 
-## Customize configuration
+- **Node.js** (version 18 ou supérieure) : Pour exécuter les commandes Node.
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+- **npm** (généralement installé avec Node.js) : Pour gérer les dépendances JavaScript.
 
-## Project Setup
+- **Git** : Pour cloner le dépôt et gérer les versions du code.
 
-```sh
-npm install
-```
+## Technologies Utilisées
 
-### Compile and Hot-Reload for Development
+- **Vue.js 3** : Framework JavaScript progressif pour la création d'interfaces utilisateur réactives.
+- **Bootstrap** : Framework CSS pour concevoir une interface utilisateur responsive.
+- **Pinia** : Gestion d'état pour Vue.js, utilisé pour gérer les données de l'application.
+- **Axios** : Utilisé pour effectuer des appels API vers le backend.
 
-```sh
-npm run dev
-```
+## Installation
 
-### Compile and Minify for Production
+1. **Cloner le dépôt** :
 
-```sh
-npm run build
-```
+   ```bash
+   git clone https://github.com/Fatoumacisse99/gestion_apprenants_frontend.git
+   ```
+
+   ```bash
+   cd gestion_apprenants_frontend
+   ```
+
+2. **Installer les dépendances** :
+
+   ```bash
+   npm install
+   ```
+
+3. **Lancer le serveur de développement** :
+   ```bash
+   npm run dev
+   ```
+
+## Fonctionnalités
+
+- **Gestion des Etudiants** : Créer, modifier,consulter ou supprimer un etudiant.
+
+- **Gestion des Modules** : Créer, modifier, consulter ou supprimer des modules.
+- **Gestion des Inscriptions** : Ajouter, modifier et supprimer des inscription.
+- **Gestion des Payements** : Ajouter, modifier et supprimer des payement.
+
+## Auteur
+
+### [Fatouma Cissé ](https://github.com/Fatoumacisse99)
+
+## Contributeurs
+
+### [Fatimata Sall](https://github.com/FatimataAliouSall)
+
+### [Harouna Traoré](https://github.com/HarounaTraore)
