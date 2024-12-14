@@ -1,93 +1,28 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary-custom">
     <div class="container">
-      <router-link to="/home" class="navbar-brand">
-        <img
-          src=""
-          alt="Logo"
-          height="40"
-          class="d-inline-block align-text-top"
-        />
-        Gestion de Suivie des apprenants
-      </router-link>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      <h1 class="navbar-brand">Gestion de Suivie des apprenants</h1>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item" v-if="isAdmin">
-            <router-link to="/utilisateurs" class="nav-link">
-              <i class="fas fa-users"></i> Utilisateurs
+          <li class="nav-item">
+            <router-link :to="{ name: 'student-list' }" class="nav-link">
+              <i class="fa-solid fa-graduation-cap"></i> Apprénants
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/clients" class="nav-link">
-              <i class="fas fa-address-book"></i> Clients
+            <router-link :to="{ name: 'module-list' }" class="nav-link">
+              <i class="fas fa-certificate"></i> Modules
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/factures" class="nav-link">
-              <i class="fas fa-file-invoice"></i> Factures
+            <router-link :to="{ name: 'registration-list' }" class="nav-link">
+              <i class="fas fa-user-plus"></i> Inscriptions
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/paiements" class="nav-link">
-              <i class="fas fa-credit-card"></i> Paiements
+            <router-link :to="{ name: 'payment-list' }" class="nav-link">
+              <i class="fas fa-credit-card"></i> Payements
             </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/modePaiements" class="nav-link">
-              <i class="fas fa-wallet"></i> Methode-Paiements
-            </router-link>
-          </li>
-          <li class="nav-item dropdown" v-if="isLoggedIn">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="navbarDropdown"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <img
-                v-if="user.profileImage"
-                :src="user.profileImage"
-                alt="Profile"
-                class="rounded-circle profile-img"
-              />
-              <span v-else class="profile-initial">{{
-                getInitial(user.nom)
-              }}</span>
-              {{ user.nom || "Profil" }}
-            </a>
-            <ul
-              class="dropdown-menu dropdown-menu-end"
-              aria-labelledby="navbarDropdown"
-            >
-              <li>
-                <router-link to="/profile" class="dropdown-item"
-                  >Voir le profil</router-link
-                >
-              </li>
-              <li>
-                <router-link to="/changer-mot-de-passe" class="dropdown-item"
-                  >Changer le mot de passe</router-link
-                >
-              </li>
-              <li>
-                <button class="dropdown-item" @click="logout">
-                  Déconnexion
-                </button>
-              </li>
-            </ul>
           </li>
         </ul>
       </div>
