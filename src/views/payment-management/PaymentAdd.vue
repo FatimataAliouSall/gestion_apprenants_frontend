@@ -1,19 +1,75 @@
 <template>
   <div class="container mt-4">
-    <div class="header d-flex justify-content-between align-items-center mb-3 p-3">
+    <div
+      class="header d-flex justify-content-center align-items-center mb-3 p-3"
+    >
       <h2 class="title">Ajouter un Paiement</h2>
     </div>
     <form @submit.prevent="handleSubmit">
-      <div class="form-group mb-3">
-        <label for="name">Nom</label>
-        <input
-          type="text"
-          id="name"
-          v-model="form.name"
-          class="form-control"
-          placeholder="Nom du paiement"
-          required
-        />
+      <div class="row">
+        <div class="form-group col-md-6 mb-3">
+          <label for="name">Payeur</label>
+          <input
+            type="text"
+            id="name"
+            v-model="form.payer"
+            class="form-control"
+            placeholder="Nom du payeur"
+            required
+          />
+        </div>
+
+        <div class="form-group col-md-6 mb-3">
+          <label for="name">Telephone</label>
+          <input
+            type="text"
+            id="name"
+            v-model="form.payerNumber"
+            class="form-control"
+            placeholder="Numero telephone du payeur"
+            required
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-6 mb-3">
+          <label for="name">Apprénant</label>
+          <select
+            type="text"
+            id="name"
+            v-model="student"
+            class="form-select"
+            required
+          >
+            <option value="" disabled>Selectionner l' Apprénant</option>
+            <option
+              v-for="student in storeStudent().students"
+              :key="student.id"
+              :value="student.id"
+            >
+              {{ student.fullName }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group col-md-6 mb-3">
+          <label for="name">Module</label>
+          <select
+            type="text"
+            id="name"
+            v-model="form.registrationId"
+            class="form-select"
+            required
+          >
+            <option value="" disabled>Selection le Module</option>
+            <option
+              v-for="registration in filteredRegistrations"
+              :key="registration.id"
+              :value="registration.id"
+            >
+              {{ registration.module.name }}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="form-group mb-3">
         <label for="amount">Montant</label>
@@ -28,12 +84,7 @@
       </div>
       <div class="form-group mb-3">
         <label for="method">Méthode</label>
-        <select
-          id="method"
-          v-model="form.method"
-          class="form-select"
-          required
-        >
+        <select id="method" v-model="form.paymentMode" class="form-select" required>
           <option value="" disabled>Choisissez une méthode</option>
           <option value="Carte Bancaire">Carte Bancaire</option>
           <option value="Espèces">Espèces</option>
@@ -41,7 +92,9 @@
         </select>
       </div>
       <div class="d-flex justify-content-between">
-        <router-link class="btn btn-cancel" :to="{ name: 'payment-list' }">Annuler</router-link>
+        <router-link class="btn btn-cancel" :to="{ name: 'payment-list' }"
+          >Annuler</router-link
+        >
         <button type="submit" class="btn btn-add">Ajouter</button>
       </div>
     </form>
@@ -49,17 +102,43 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import { storePayment } from "@/stores/storePayment";
 import { useRouter } from "vue-router";
+import { storeRegistration } from "@/stores/storeRegistration";
+import { storeStudent } from "@/stores/storeStudent";
 
 const router = useRouter();
 const store = storePayment();
-
+const student = ref("");
 const form = reactive({
-  name: "",
+  payer: "",
   amount: "",
-  method: "",
+  paymentMode: "",
+  payerNumber: "",
+  registrationId: "",
+});
+
+const filteredRegistrations = ref([]);
+
+const filterRegistrations = () => {
+  const allRegistrations = storeRegistration().registrations;
+  filteredRegistrations.value = allRegistrations.filter(
+    (registration) => registration.studentId === Number(student.value)
+  );
+};
+
+watch(student, () => {
+  filterRegistrations();
+});
+
+onMounted(async () => {
+  try {
+    await storeRegistration().loadData();
+    await storeStudent().loadData();
+  } catch (error) {
+    console.log("Erreur lors de chargement de données: ", error);
+  }
 });
 
 const handleSubmit = async () => {
