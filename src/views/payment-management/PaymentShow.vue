@@ -93,7 +93,7 @@
           disabled
           id="method"
           v-model="form.paymentMode"
-          class="form-select"
+          class="form-select "
           required
         >
           <option value="" disabled>Choisissez une méthode</option>
