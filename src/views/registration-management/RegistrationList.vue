@@ -57,7 +57,10 @@
             >
               <i class="fas fa-edit"></i>
             </router-link>
-            <button class="action-icon btn-delete">
+            <button
+              class="action-icon btn-delete"
+              @click="store.destroy(registration.id)"
+            >
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
