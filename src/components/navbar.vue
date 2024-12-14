@@ -2,8 +2,13 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary-custom">
     <div class="container">
       <router-link to="/home" class="navbar-brand">
-        <img src="../assets/logo.svg" alt="Logo" height="40" class="d-inline-block align-text-top" />
-        Gestion de facturation
+        <img
+          src=""
+          alt="Logo"
+          height="40"
+          class="d-inline-block align-text-top"
+        />
+        Gestion de Suivie des apprenants
       </router-link>
       <button
         class="navbar-toggler"
@@ -58,18 +63,29 @@
                 alt="Profile"
                 class="rounded-circle profile-img"
               />
-              <span v-else class="profile-initial">{{ getInitial(user.nom) }}</span>
-              {{ user.nom || 'Profil' }}
+              <span v-else class="profile-initial">{{
+                getInitial(user.nom)
+              }}</span>
+              {{ user.nom || "Profil" }}
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="navbarDropdown"
+            >
               <li>
-                <router-link to="/profile" class="dropdown-item">Voir le profil</router-link>
+                <router-link to="/profile" class="dropdown-item"
+                  >Voir le profil</router-link
+                >
               </li>
               <li>
-                <router-link to="/changer-mot-de-passe" class="dropdown-item">Changer le mot de passe</router-link>
+                <router-link to="/changer-mot-de-passe" class="dropdown-item"
+                  >Changer le mot de passe</router-link
+                >
               </li>
               <li>
-                <button class="dropdown-item" @click="logout">Déconnexion</button>
+                <button class="dropdown-item" @click="logout">
+                  Déconnexion
+                </button>
               </li>
             </ul>
           </li>
@@ -80,35 +96,35 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
+import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
 
 const router = useRouter();
 
 const user = reactive({
-  nom: '',
-  email: '',
-  profileImage: '',
+  nom: "",
+  email: "",
+  profileImage: "",
 });
 
 const isLoggedIn = ref(false);
 const isAdmin = ref(false);
 
-const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : '?');
+const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : "?");
 
 const logout = () => {
-  localStorage.removeItem('token');
+  localStorage.removeItem("token");
   location.reload();
 };
 
 onMounted(async () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   if (token) {
     isLoggedIn.value = true;
 
     try {
-      const response = await axios.get('http://localhost:4000/profile', {
+      const response = await axios.get("http://localhost:4000/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -116,10 +132,10 @@ onMounted(async () => {
         user.nom = response.data.user.nom;
         user.email = response.data.user.email;
         user.profileImage = response.data.user.profileImage;
-        isAdmin.value = response.data.user.role === 'ADMIN';
+        isAdmin.value = response.data.user.role === "ADMIN";
       }
     } catch (error) {
-      console.error('Erreur lors de la récupération du profil:', error);
+      console.error("Erreur lors de la récupération du profil:", error);
     }
   }
 });
