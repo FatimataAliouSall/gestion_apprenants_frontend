@@ -1,53 +1,51 @@
 <template>
   <div class="container mt-4">
-    <div
-      class="header d-flex align-items-center justify-content-center mb-3 p-3"
-    >
-      <h2 class="title">Modification un Apprénent</h2>
+    <div class="header d-flex align-items-center justify-content-center mb-3 p-3">
+      <h2 class="title">Modifier un Apprenant</h2>
     </div>
-    <form @submit.prevent="update" class="styled-form">
+    <form @submit.prevent="validateForm" class="styled-form">
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Nom complet:</label>
           <input
             v-model="student.fullName"
-            required
             class="form-control form-control-sm"
           />
+          <div v-if="errors.fullName" class="text-danger">{{ errors.fullName }}</div>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Tuteur:</label>
           <input
             v-model="student.tutor"
-            required
             class="form-control form-control-sm"
           />
+          <div v-if="errors.tutor" class="text-danger">{{ errors.tutor }}</div>
         </div>
       </div>
       <div class="mb-3">
         <label class="form-label">Email:</label>
         <input
           v-model="student.email"
-          required
           type="email"
           class="form-control form-control-sm"
         />
+        <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
       </div>
       <div class="mb-3">
         <label class="form-label">Téléphone:</label>
         <input
           v-model="student.phoneNumber"
-          required
           class="form-control form-control-sm"
         />
+        <div v-if="errors.phoneNumber" class="text-danger">{{ errors.phoneNumber }}</div>
       </div>
       <div class="mb-3">
         <label class="form-label">Adresse:</label>
         <input
           v-model="student.address"
-          required
           class="form-control form-control-sm"
         />
+        <div v-if="errors.address" class="text-danger">{{ errors.address }}</div>
       </div>
       <div class="d-flex justify-content-between mt-4">
         <button type="submit" class="btn btn-primary flex-grow-1 me-2">
@@ -70,6 +68,7 @@ import router from "@/router";
 import { storeStudent } from "@/stores/storeStudent";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+import axios from 'axios';  // Import Axios
 
 const store = storeStudent();
 const student = ref({
@@ -79,7 +78,15 @@ const student = ref({
   address: "",
   email: "",
 });
+const errors = ref({
+  fullName: null,
+  tutor: null,
+  email: null,
+  phoneNumber: null,
+  address: null,
+});
 
+const loading = ref(false);
 const id = Number(useRoute().params.id);
 
 onMounted(async () => {
@@ -87,11 +94,100 @@ onMounted(async () => {
     const result = await store.findStudent(id);
     student.value = result;
   } catch (error) {
-    console.log("Erreur lors de la recupération de l'apprénent: ", error);
+    console.log("Erreur lors de la récupération de l'apprenant: ", error);
   }
 });
 
-const update = async () => {
+const validateForm = async () => {
+  Object.keys(errors.value).forEach((key) => {
+    errors.value[key] = null;
+  });
+
+  let isValid = true;
+  
+  // Validation des champs
+  if (!student.value.fullName) {
+    errors.value.fullName = "Le nom complet est requis.";
+    isValid = false;
+  } else if (student.value.fullName.length < 2 || student.value.fullName.length > 50) {
+    errors.value.fullName = "Le nom doit contenir entre 2 et 50 caractères.";
+    isValid = false;
+  } else if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(student.value.fullName)) {
+    errors.value.fullName = "Le nom ne doit contenir que des lettres.";
+    isValid = false;
+  }
+
+  if (!student.value.tutor) {
+    errors.value.tutor = "Le nom du tuteur est requis.";
+    isValid = false;
+  } else if (student.value.tutor.length < 2 || student.value.tutor.length > 50) {
+    errors.value.tutor = "Le nom du tuteur doit contenir entre 2 et 50 caractères.";
+    isValid = false;
+  } else if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(student.value.tutor)) {
+    errors.value.tutor = "Le nom du tuteur ne doit contenir que des lettres.";
+    isValid = false;
+  }
+
+  if (!student.value.email) {
+    errors.value.email = "L'email est requis.";
+    isValid = false;
+  } else if (!isValidEmail(student.value.email)) {
+    errors.value.email = "Veuillez entrer un email valide.";
+    isValid = false;
+  } else {
+    try {
+      // Vérification si l'email existe déjà
+      const response = await axios.post('/api/check-email', { email: student.value.email });
+      if (response.data.exists) {
+        errors.value.email = "Cet email est déjà utilisé.";
+        isValid = false;
+      }
+    } catch (error) {
+      console.log("Erreur lors de la vérification de l'email: ", error);
+    }
+  }
+
+  if (!student.value.phoneNumber) {
+    errors.value.phoneNumber = "Le numéro de téléphone est requis.";
+    isValid = false;
+  } else if (!/^\d{8}$/.test(student.value.phoneNumber)) {
+    errors.value.phoneNumber = "Le numéro de téléphone doit être composé de 8 chiffres.";
+    isValid = false;
+  } else {
+    try {
+      // Vérification si le numéro de téléphone existe déjà
+      const response = await axios.post('/api/check-phone', { phoneNumber: student.value.phoneNumber });
+      if (response.data.exists) {
+        errors.value.phoneNumber = "Ce numéro de téléphone est déjà utilisé.";
+        isValid = false;
+      }
+    } catch (error) {
+      console.log("Erreur lors de la vérification du téléphone: ", error);
+    }
+  }
+
+  if (!student.value.address) {
+    errors.value.address = "L'adresse est requise.";
+    isValid = false;
+  } else if (student.value.address.length < 2 || student.value.address.length > 50) {
+    errors.value.address = "L'adresse doit contenir entre 2 et 50 caractères.";
+    isValid = false;
+  } else if (/^\d+$/.test(student.value.address)) {
+    errors.value.address = "L'adresse ne peut pas être uniquement composée de chiffres.";
+    isValid = false;
+  }
+
+  if (isValid) {
+    updateStudent();
+  }
+};
+
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const updateStudent = async () => {
   try {
     await store.updateStudent(
       id,
@@ -103,7 +199,7 @@ const update = async () => {
     );
     router.push({ name: "student-list" });
   } catch (error) {
-    console.log("Erreur lors de l'ajout d'un apprenent: ", error);
+    console.log("Erreur lors de la mise à jour de l'apprenant: ", error);
   }
 };
 </script>

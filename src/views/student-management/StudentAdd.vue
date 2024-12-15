@@ -1,51 +1,73 @@
 <template>
   <div class="container mt-4">
     <div class="header d-flex align-items-center justify-content-center mb-3 p-3">
-      <h2 class="title">Ajouter un nouveau Apprénent</h2>
+      <h2 class="title">Ajouter un nouveau Apprenant</h2>
     </div>
-    <form @submit.prevent="newStudent" class="styled-form">
+    <form @submit.prevent="validateForm" class="styled-form">
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Nom complet:</label>
-          <input v-model="student.fullName" required class="form-control form-control-sm" />
+          <input
+            v-model="student.fullName"
+            class="form-control form-control-sm"
+          />
           <div v-if="errors.fullName" class="text-danger">{{ errors.fullName }}</div>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Tuteur:</label>
-          <input v-model="student.tutor" required class="form-control form-control-sm" />
+          <input
+            v-model="student.tutor"
+            class="form-control form-control-sm"
+          />
           <div v-if="errors.tutor" class="text-danger">{{ errors.tutor }}</div>
         </div>
       </div>
       <div class="mb-3">
         <label class="form-label">Email:</label>
-        <input v-model="student.email" required type="email" class="form-control form-control-sm" />
+        <input
+          v-model="student.email"
+          type="email"
+          class="form-control form-control-sm"
+        />
         <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
       </div>
       <div class="mb-3">
         <label class="form-label">Téléphone:</label>
-        <input v-model="student.phoneNumber" required class="form-control form-control-sm" />
+        <input
+          v-model="student.phoneNumber"
+          class="form-control form-control-sm"
+        />
         <div v-if="errors.phoneNumber" class="text-danger">{{ errors.phoneNumber }}</div>
       </div>
       <div class="mb-3">
         <label class="form-label">Adresse:</label>
-        <input v-model="student.address" required class="form-control form-control-sm" />
+        <input
+          v-model="student.address"
+          class="form-control form-control-sm"
+        />
         <div v-if="errors.address" class="text-danger">{{ errors.address }}</div>
       </div>
       <div class="d-flex justify-content-between mt-4">
         <button type="submit" class="btn btn-primary flex-grow-1 me-2">
           Enregistrer
         </button>
-        <button type="button" @click="router.push({ name: 'student-list' })" class="btn btn-cancel flex-grow-1">
+        <button
+          type="button"
+          @click="router.push({ name: 'student-list' })"
+          class="btn btn-cancel flex-grow-1"
+        >
           Annuler
         </button>
       </div>
     </form>
   </div>
 </template>
+
 <script setup>
 import router from "@/router";
 import { storeStudent } from "@/stores/storeStudent";
 import { ref } from "vue";
+
 const store = storeStudent();
 const student = ref({
   fullName: "",
@@ -62,7 +84,74 @@ const errors = ref({
   address: null,
 });
 
+const validateForm = () => {
+  Object.keys(errors.value).forEach((key) => {
+    errors.value[key] = null;
+  });
 
+  let isValid = true;
+  if (!student.value.fullName) {
+    errors.value.fullName = "Le nom complet est requis.";
+    isValid = false;
+  } else if (student.value.fullName.length < 2 || student.value.fullName.length > 50) {
+    errors.value.fullName = "Le nom doit contenir entre 2 et 50 caractères.";
+    isValid = false;
+  } else if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(student.value.fullName)) {
+    errors.value.fullName = "Le nom ne doit contenir que des lettres.";
+    isValid = false;
+  }
+
+  if (!student.value.tutor) {
+    errors.value.tutor = "Le nom du tuteur est requis.";
+    isValid = false;
+  } else if (student.value.tutor.length < 2 || student.value.tutor.length > 50) {
+    errors.value.tutor = "Le nom du tuteur doit contenir entre 2 et 50 caractères.";
+    isValid = false;
+  } else if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(student.value.tutor)) {
+    errors.value.tutor = "Le nom du tuteur ne doit contenir que des lettres.";
+    isValid = false;
+  }
+
+  if (!student.value.email) {
+    errors.value.email = "L'email est requis.";
+    isValid = false;
+  } else if (!isValidEmail(student.value.email)) {
+    errors.value.email = "Veuillez entrer un email valide.";
+    isValid = false;
+  }
+
+  if (!student.value.phoneNumber) {
+    errors.value.phoneNumber = "Le numéro de téléphone est requis.";
+    isValid = false;
+  } else if (!/^\d{8}$/.test(student.value.phoneNumber)) {
+    errors.value.phoneNumber = "Le numéro de téléphone doit être composé de 8 chiffres.";
+    isValid = false;
+  }
+
+  if (!student.value.address) {
+    errors.value.address = "L'adresse est requise.";
+    isValid = false;
+  } else if (student.value.address.length < 2 || student.value.address.length > 50) {
+    errors.value.address = "L'adresse doit contenir entre 2 et 50 caractères.";
+    isValid = false;
+  } else if (/^\d+$/.test(student.value.address)) {
+    errors.value.address = "L'adresse ne peut pas être uniquement composée de chiffres.";
+    isValid = false;
+  }
+
+  // Si tout est valide, soumettre le formulaire
+  if (isValid) {
+    newStudent();
+  }
+};
+
+// Vérifier si un email est valide
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+// Fonction pour ajouter l'étudiant
 const newStudent = async () => {
   try {
     await store.addStudent(
@@ -74,23 +163,10 @@ const newStudent = async () => {
     );
     router.push({ name: "student-list" });
   } catch (error) {
-    console.log("Erreur lors de l'ajout d'un apprenent: ", error);
-    if (error.response && error.response.data.errors) {
-      Object.keys(errors.value).forEach((key) => (errors.value[key] = null)); 
-
-      error.response.data.errors.forEach((err) => {
-        if (errors.value[err.param]) {
-          errors.value[err.param] = err.msg;
-        }
-      });
-    }
+    console.log("Erreur lors de l'ajout d'un apprenant : ", error);
   }
 };
-  
 </script>
-
-
-
 
 <style scoped>
 .container {
