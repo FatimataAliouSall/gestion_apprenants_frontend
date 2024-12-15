@@ -64,11 +64,13 @@
     </form>
   </div>
 </template>
+
 <script setup>
 import router from "@/router";
 import { storeStudent } from "@/stores/storeStudent";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+
 const store = storeStudent();
 const student = ref({
   fullName: "",
@@ -77,7 +79,9 @@ const student = ref({
   address: "",
   email: "",
 });
+
 const id = Number(useRoute().params.id);
+
 onMounted(async () => {
   try {
     const result = await store.findStudent(id);
@@ -86,6 +90,7 @@ onMounted(async () => {
     console.log("Erreur lors de la recupération de l'apprénent: ", error);
   }
 });
+
 const update = async () => {
   try {
     await store.updateStudent(
@@ -102,8 +107,6 @@ const update = async () => {
   }
 };
 </script>
-
-
 
 <style scoped>
 .container {

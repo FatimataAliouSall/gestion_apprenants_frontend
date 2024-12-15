@@ -1,6 +1,9 @@
 import { defineStore } from "pinia";
 import HTTP from "@/config.axios";
 import { ref } from "vue";
+import { Notyf } from "notyf"; 
+
+const notyf = new Notyf(); 
 
 export const storeStudent = defineStore("student", () => {
   const students = ref([]);
@@ -11,6 +14,7 @@ export const storeStudent = defineStore("student", () => {
       students.value = result;
       return result;
     } catch (error) {
+      notyf.error('Erreur lors du chargement des étudiants : ' + error.message);
       throw error;
     }
   };
@@ -22,6 +26,7 @@ export const storeStudent = defineStore("student", () => {
       await loadData();
       return result;
     } catch (error) {
+      notyf.error("Erreur lors de l'ajout de l'étudiant: " + error.message);
       throw error;
     }
   };
@@ -35,8 +40,10 @@ export const storeStudent = defineStore("student", () => {
         phoneNumber,
       });
       await loadData();
+      notyf.success("Étudiant ajouté avec succès!");
       return result;
     } catch (error) {
+      notyf.error("Erreur lors de l'ajout de l'étudiant: " + error.message);
       throw error;
     }
   };
@@ -59,9 +66,10 @@ export const storeStudent = defineStore("student", () => {
       });
       const result = data.result;
       await loadData();
-
+      notyf.success("Étudiant mis à jour avec succès!");
       return result;
     } catch (error) {
+      notyf.error("Erreur lors de la mise à jour de l'étudiant: " + error.message);
       throw error;
     }
   };
@@ -71,7 +79,9 @@ export const storeStudent = defineStore("student", () => {
       await HTTP.delete(`student/${id}`);
 
       await loadData();
+      notyf.success("Étudiant supprimé avec succès!"); 
     } catch (error) {
+      notyf.error("Erreur lors de la suppression de l'étudiant: " + error.message);
       throw error;
     }
   };

@@ -1,63 +1,41 @@
 <template>
   <div class="container mt-4">
-    <div
-      class="header d-flex align-items-center justify-content-center mb-3 p-3"
-    >
+    <div class="header d-flex align-items-center justify-content-center mb-3 p-3">
       <h2 class="title">Ajouter un nouveau Apprénent</h2>
     </div>
     <form @submit.prevent="newStudent" class="styled-form">
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Nom complet:</label>
-          <input
-            v-model="student.fullName"
-            required
-            class="form-control form-control-sm"
-          />
+          <input v-model="student.fullName" required class="form-control form-control-sm" />
+          <div v-if="errors.fullName" class="text-danger">{{ errors.fullName }}</div>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Tuteur:</label>
-          <input
-            v-model="student.tutor"
-            required
-            class="form-control form-control-sm"
-          />
+          <input v-model="student.tutor" required class="form-control form-control-sm" />
+          <div v-if="errors.tutor" class="text-danger">{{ errors.tutor }}</div>
         </div>
       </div>
       <div class="mb-3">
         <label class="form-label">Email:</label>
-        <input
-          v-model="student.email"
-          required
-          type="email"
-          class="form-control form-control-sm"
-        />
+        <input v-model="student.email" required type="email" class="form-control form-control-sm" />
+        <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
       </div>
       <div class="mb-3">
         <label class="form-label">Téléphone:</label>
-        <input
-          v-model="student.phoneNumber"
-          required
-          class="form-control form-control-sm"
-        />
+        <input v-model="student.phoneNumber" required class="form-control form-control-sm" />
+        <div v-if="errors.phoneNumber" class="text-danger">{{ errors.phoneNumber }}</div>
       </div>
       <div class="mb-3">
         <label class="form-label">Adresse:</label>
-        <input
-          v-model="student.address"
-          required
-          class="form-control form-control-sm"
-        />
+        <input v-model="student.address" required class="form-control form-control-sm" />
+        <div v-if="errors.address" class="text-danger">{{ errors.address }}</div>
       </div>
       <div class="d-flex justify-content-between mt-4">
         <button type="submit" class="btn btn-primary flex-grow-1 me-2">
           Enregistrer
         </button>
-        <button
-          type="button"
-          @click="router.push({ name: 'student-list' })"
-          class="btn btn-cancel flex-grow-1"
-        >
+        <button type="button" @click="router.push({ name: 'student-list' })" class="btn btn-cancel flex-grow-1">
           Annuler
         </button>
       </div>
@@ -76,6 +54,14 @@ const student = ref({
   address: "",
   email: "",
 });
+const errors = ref({
+  fullName: null,
+  tutor: null,
+  email: null,
+  phoneNumber: null,
+  address: null,
+});
+
 
 const newStudent = async () => {
   try {
@@ -89,9 +75,20 @@ const newStudent = async () => {
     router.push({ name: "student-list" });
   } catch (error) {
     console.log("Erreur lors de l'ajout d'un apprenent: ", error);
+    if (error.response && error.response.data.errors) {
+      Object.keys(errors.value).forEach((key) => (errors.value[key] = null)); 
+
+      error.response.data.errors.forEach((err) => {
+        if (errors.value[err.param]) {
+          errors.value[err.param] = err.msg;
+        }
+      });
+    }
   }
 };
+  
 </script>
+
 
 
 
