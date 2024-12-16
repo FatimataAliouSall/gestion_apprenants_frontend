@@ -88,6 +88,19 @@
           </select>
           <div v-if="errors.paymentMode" class="invalid-feedback">{{ errors.paymentMode }}</div>
         </div>
+
+        <div class="form-group col-md-6 mb-3">
+          <label for="payerNumber">Montant</label>
+          <input
+            type="text"
+            id="payerNumber"
+            v-model="form.amount"
+            class="form-control"
+            placeholder="Numéro téléphone du payeur"
+            :class="{'is-invalid': errors.amount}"
+          />
+          <div v-if="errors.payerNumber" class="invalid-feedback">{{ errors.payerNumber }}</div>
+        </div>
       </div>
 
       <div class="d-flex justify-content-between">
